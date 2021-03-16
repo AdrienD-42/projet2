@@ -4,10 +4,12 @@ namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class Participant implements UserInterface
 {
@@ -33,6 +35,31 @@ class Participant implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $nom;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $prenom;
+
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $telephone;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $administrateur;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $actif;
 
     public function getId(): ?int
     {
@@ -66,11 +93,8 @@ class Participant implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        return $this->roles;
 
-        return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
@@ -113,5 +137,65 @@ class Participant implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(?string $telephone): self
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    public function getAdministrateur(): ?bool
+    {
+        return $this->administrateur;
+    }
+
+    public function setAdministrateur(bool $administrateur): self
+    {
+        $this->administrateur = $administrateur;
+
+        return $this;
+    }
+
+    public function getActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): self
+    {
+        $this->actif = $actif;
+
+        return $this;
     }
 }
