@@ -13,3 +13,8 @@
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+###< symfony/directory ###
+var
+vendor
+.idea
