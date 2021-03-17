@@ -6,10 +6,11 @@ use App\Repository\ParticipantRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity(fields={"email"}, message="Cette adresse mail est déjà utilisée.")
  */
 class Participant implements UserInterface
 {
@@ -22,6 +23,8 @@ class Participant implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank(message="Veuillez indiquer un email.")
+     * @Assert\Length(max="180")
      */
     private $email;
 
@@ -38,17 +41,27 @@ class Participant implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=100)
+     *@Assert\NotBlank(message="Veuillez indiquer votre nom.")
+     * @Assert\Length(min="2", max="100",
+     *                minMessage= "Votre nom doit avoir au moins {{ limit }} caractères.",
+     *                maxMessage= "Votre nom doit avoir au maximum {{ limit }} caractères.")
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=100)
+     *@Assert\NotBlank(message="Veuillez indiquer votre prenom.")
+     * @Assert\Length(min="2", max="100",
+     *                minMessage= "Votre prenom doit avoir au moins {{ limit }} caractères.",
+     *                maxMessage= "Votre prenom doit avoir au maximum {{ limit }} caractères.")
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
+     * @Assert\Length(max="10", maxMessage= "Votre numéro de téléphone doit avoir au maximum {{ limit }} caractères")
      */
+
     private $telephone;
 
     /**
