@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{{ parent() }}
+
+{% block title %} {{ sortie.nom }} {% endblock %}
+
+{% block main %}
+    <section class="">
+        <h1 class="text-center  my-3">Sortie | {{ sortie.nom }}</h1>
+
+        {# Affichage de la sortie #}
+        <div class="jumbotron">
+            <div class="row justify-content-around">
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Nom de la sortie :</span> {{ sortie.nom }}</p>
+                </div>
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Site :</span>{{ sortie.site.nom }}</p>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Date et heure de la sortie :</span> {{ sortie.DateHeureDebut|date('d/m/Y H:i')}}</p>
+                </div>
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Lieu :</span> {{ sortie.lieu.nom }}</p>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Rue :</span> {{ sortie.lieu.ville.nom  }}</p>
+                </div>
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Date et heure limite d'inscription :</span> {{sortie.dateLimiteInscription|date('d/m/Y H:i')}}</p>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Nb de participants maximum :</span> {{ sortie.nbInscriptionsMax }}</p>
+                </div>
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Ville :</span> {{ sortie.lieu.rue }}</p>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Durée :</span> {{ sortie.duree }} minutes</p>
+                </div>
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Latitude :</span>{{ sortie.lieu.latitude }}</p>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Description et infos :</span> {{ sortie.infosSortie }}</p>
+                </div>
+                <div class="col-4">
+                    <p><span class="font-weight-bold">Longitude :</span> </p>
+                </div>
+            </div>
+    </section>
+
+    <div class="container">
+        <p class="">Liste des participants inscrits</p>
+        <table class="table table-striped table-bordered table-hovered">
+            <thead>
+            <tr class="thead-light">
+                <th>Nom</th>
+                <th>Prenom</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for participant in sortie.inscrits %}
+                <tr>
+                    <td>
+                        <a href="{{ path('profil', {'id': participant.id }) }}">
+                           {{ participant.nom }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ path('profil', {'id': participant.id }) }}">
+                            {{ participant.prenom }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+

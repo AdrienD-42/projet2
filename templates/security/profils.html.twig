@@ -1,0 +1,27 @@
+
+{%  extends 'base.html.twig' %}
+
+{% block title %}Profil {% endblock %}
+
+{% block main %}
+    <div class="text-center">
+                            <h1><strong>Participant</strong></h1>
+        <div>
+            <label for="prenom">Nom : {{ participant.nom }}</label>
+        </div>
+        <div>
+            <label for="nom">Prenom : {{ participant.prenom }}</label>
+        </div>
+        <div>
+            <label for="telephone"> Telephone : {{ participant.telephone }}</label>
+        </div>
+        <div>
+            <label for="email"> Email : {{ participant.email }}</label>
+        </div>
+
+        <div>
+            <a href="{{ path("main") }}"><button class="btn btn-info " type="button" name="Retour">Retour</button></a>
+        </div>
+    </div>
+
+{% endblock %}
