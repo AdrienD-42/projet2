@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ConnectionController extends AbstractController
 {
     /**
-     * @Route("/main", name="main")
+     * @Route("/", name="main")
      */
     public function index(): Response
     {
@@ -17,4 +17,20 @@ class ConnectionController extends AbstractController
             'controller_name' => 'ConnectionController',
         ]);
     }
+
+
+    /*public function listeSorties() : Response
+    {
+          return $this->render("templateListSorties.html.twig", [
+              $sorties = [
+                  'nom' => ['Philo', 'Origamie', 'Perle'],
+                  'date' => ['19/07/2018', '21/07/2018', '21/07/2018'],
+                  'cloture' => ['19/07/2018', '21/07/2018', '21/07/2018'],
+                  'inscrits/places' => ['8/8', '3/5', '2/12'],
+                  'Etat' => ['En cours', 'Fermé', 'Fermé'],
+                  'Inscrit' => ['X', ' ', 'X'],
+                  'Organisateur' => ['Spinoz A', 'Rémi S', 'Jojo56'],
+          ],]);
+}*/
 }
+
