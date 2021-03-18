@@ -3,7 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Participant;
+use App\Entity\Site;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -14,7 +17,12 @@ class RegisterType extends AbstractType
     {
         $builder
             ->add('email')
+            ->add('site' , EntityType::Class , [
+               'class'=>Site::class ,
+                    'choice_label' => ChoiceList::label($this, 'libelle'),
+                ]
 
+            )
 
             ->add('password')
             ->add('nom')

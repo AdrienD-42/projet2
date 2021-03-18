@@ -22,6 +22,7 @@ class RegisterController extends AbstractController
         $Participant->setActif(true);
         $Participant->setRoles(array('ROLE_USER'));
         $Participant->setAdministrateur(false);
+
         //on recup le formulaire
         $form = $this->createForm(RegisterType::class , $Participant);
         $form->handleRequest($request);
