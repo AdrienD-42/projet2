@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+{{ parent() }}
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Liste des sorties</h1>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Nom de la sortie</th>
+                        <th>Date de la sortie</th>
+                        <th>Durée de la sortie</th>
+                        <th>Clôture</th>
+                        <th>inscrits/places</th>
+                        <th>État</th>
+                        <th>Inscrit</th>>
+                        <th>Organisateur</th>
+                        <th>Actions</th>
+
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sortie in sorties %}
+                        <td colspan="9">
+                            {{ sortie.nom }}
+                        </td>
+                        {% endfor %}
+                    {# {% for sortie in sorties %}
+                        <td>
+                            {{ sortie.nom }}</a>
+                        </td>
+
+                        <td>
+                            {{ sortie.dateDebut }}</a>
+                        </td>
+
+                        <td>
+                            {{ sortie.duree }}</a>
+                        </td>
+
+                        <td>
+                            {{ sortie.dateCloture }}</a>
+                        </td>
+
+                        <td>
+                          {{ sortie.inscrit }}     {{ sortie.inscritMax }} </a>
+                        </td>
+
+                        <td>
+                            {{ sortie.etatSortie }}</a>
+                        </td>
+
+                        <td>
+                            {{ sortie.}}</a>
+                        </td>
+
+                        <td>
+                            {{ sortie.organisateur}}</a>
+                        </td>
+
+
+                        </td>
+                        </tr>
+                    {% endfor %}#}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

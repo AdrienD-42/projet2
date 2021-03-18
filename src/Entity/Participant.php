@@ -3,14 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
- * @UniqueEntity(fields={"email"}, message="Cette adresse mail est déjà utilisée.")
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
 class Participant implements UserInterface
 {
@@ -50,10 +51,10 @@ class Participant implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=100)
-     *@Assert\NotBlank(message="Veuillez indiquer votre prenom.")
+     * @Assert\NotBlank(message="Veuillez indiquer votre prénom.")
      * @Assert\Length(min="2", max="100",
-     *                minMessage= "Votre prenom doit avoir au moins {{ limit }} caractères.",
-     *                maxMessage= "Votre prenom doit avoir au maximum {{ limit }} caractères.")
+     *                minMessage= "Votre prénom doit avoir au moins {{ limit }} caractères.",
+     *                maxMessage= "Votre prénom doit avoir au maximum {{ limit }} caractères.")
      */
     private $prenom;
 
@@ -61,7 +62,6 @@ class Participant implements UserInterface
      * @ORM\Column(type="string", length=10, nullable=true)
      * @Assert\Length(max="10", maxMessage= "Votre numéro de téléphone doit avoir au maximum {{ limit }} caractères")
      */
-
     private $telephone;
 
     /**
@@ -73,6 +73,27 @@ class Participant implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $actif;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="participant")
+     */
+    private $site;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="organisateur")
+     */
+    private $sorties;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Sortie::class, inversedBy="participants")
+     */
+    private $inscrit;
+
+    public function __construct()
+    {
+        $this->sorties = new ArrayCollection();
+        $this->inscrit = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -208,6 +229,72 @@ class Participant implements UserInterface
     public function setActif(bool $actif): self
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): self
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Sortie[]
+     */
+    public function getSorties(): Collection
+    {
+        return $this->sorties;
+    }
+
+    public function addSorty(Sortie $sorty): self
+    {
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties[] = $sorty;
+            $sorty->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSorty(Sortie $sorty): self
+    {
+        if ($this->sorties->removeElement($sorty)) {
+            // set the owning side to null (unless already changed)
+            if ($sorty->getOrganisateur() === $this) {
+                $sorty->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Sortie[]
+     */
+    public function getInscrit(): Collection
+    {
+        return $this->inscrit;
+    }
+
+    public function addInscrit(Sortie $inscrit): self
+    {
+        if (!$this->inscrit->contains($inscrit)) {
+            $this->inscrit[] = $inscrit;
+        }
+
+        return $this;
+    }
+
+    public function removeInscrit(Sortie $inscrit): self
+    {
+        $this->inscrit->removeElement($inscrit);
 
         return $this;
     }
