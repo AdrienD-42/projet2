@@ -1,27 +1,43 @@
 
-{%  extends 'base.html.twig' %}
+{%  extends 'index_base.html.twig' %}
 
 {% block title %}Profil {% endblock %}
 
-{% block main %}
+{% block body %}
     <div class="text-center">
                             <h1><strong>Participant</strong></h1>
         <div>
-            <label for="prenom">Nom : {{ participant.nom }}</label>
+            <label for="prenom">Nom :
+                <input type="text"  value="{{ participant.nom }}">
+            </label>
         </div>
         <div>
-            <label for="nom">Prenom : {{ participant.prenom }}</label>
+            <label for="nom">Prenom :
+                <input type="text"  value="{{ participant.prenom }}">
+            </label>
         </div>
         <div>
-            <label for="telephone"> Telephone : {{ participant.telephone }}</label>
+            <label for="telephone"> Telephone :
+                <input type="text"  value="{{ participant.telephone}}">
+            </label>
         </div>
         <div>
-            <label for="email"> Email : {{ participant.email }}</label>
+            <label for="email"> Email :
+               <input type="text"  value="{{ participant.email }}">
+            </label>
         </div>
-
+        <br>   <br>
         <div>
-            <a href="{{ path("main") }}"><button class="btn btn-info " type="button" name="Retour">Retour</button></a>
+            <a href="{{ path("main") }}"><button class="btn btn-primary btn-sm" type="button" name="Retour">Retour</button></a>
         </div>
+        {% if is_granted('ROLE_USER') %}
+        <div>
+            <a href=" "><button class="btn btn-primary btn-sm" type="button" name="Retour">Modifier mon profil</button></a>
+        </div>
+        <div>
+            <a href=" "><button class="btn btn-primary btn-sm" type="button" name="Retour">Supprimer mon compte</button></a>
+        </div>
+{% endif %}
     </div>
 
 {% endblock %}
