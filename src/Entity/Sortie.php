@@ -51,6 +51,7 @@ class Sortie
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
      */
     private $etatSortie;
 
@@ -59,10 +60,6 @@ class Sortie
      */
     private $urlPhoto;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $lieux_no_lieu;
 
     /**
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="sortie")
@@ -74,12 +71,6 @@ class Sortie
      * @ORM\JoinColumn(nullable=false)
      */
     private $organisateur;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $etats_no_etat;
 
     /**
      * @ORM\ManyToOne(targetEntity=Lieu::class, inversedBy="sortie")
@@ -198,18 +189,6 @@ class Sortie
         return $this;
     }
 
-    public function getLieuxNoLieu(): ?int
-    {
-        return $this->lieux_no_lieu;
-    }
-
-    public function setLieuxNoLieu(int $lieux_no_lieu): self
-    {
-        $this->lieux_no_lieu = $lieux_no_lieu;
-
-        return $this;
-    }
-
     public function getSite(): ?Site
     {
         return $this->site;
@@ -254,18 +233,6 @@ class Sortie
     public function removeInscrit(Participant $inscrit): self
     {
         $this->inscrit->removeElement($inscrit);
-
-        return $this;
-    }
-
-    public function getEtatsNoEtat(): ?Etat
-    {
-        return $this->etats_no_etat;
-    }
-
-    public function setEtatsNoEtat(?Etat $etats_no_etat): self
-    {
-        $this->etats_no_etat = $etats_no_etat;
 
         return $this;
     }

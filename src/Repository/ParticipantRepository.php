@@ -36,6 +36,11 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         $this->_em->flush();
     }
 
+    public function getUserJeanPierre(): UserInterface
+    {
+        $this->find("3");
+        return $this->find("3");
+    }
     // /**
     //  * @return Participant[] Returns an array of Participant objects
     //  */

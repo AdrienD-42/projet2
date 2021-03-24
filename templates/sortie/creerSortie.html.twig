@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+{{ parent() }}
+
+    <h3>Crée une sortie</h3>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+
+    <button type="submit">Créer une sortie</button>
+    {#
+    <div>
+        <ul>
+            <li><label for="creerSortie">Nom de la sortie : </label>
+                <input type="text" name="nomSortie" id="nomSortie"></li>
+
+            <li><label for="dateDebut">Date de la sortie : </label>
+                <input type="date" name="dateDebut" id="dateDebut"></li>
+
+            <li><label for="duree">Durée de la sortie : </label>
+                <input type="time" name="duree" id="duree"></li>
+
+            <li><label for="dateCloture">Date de fin de la sortie : </label>
+                <input type="date" name="dateCloture" id="dateCloture"></li>
+
+            <li><label for="nbInscriptionsMax">Nombre maximum de participants : </label>
+                <input type="number" name="nbInscriptionsMax" id="nbInscriptionsMax"></li>
+
+            <li><label for="descriptionInfos">Description de la sortie : </label>
+                <input type="text" name="descriptionInfos" id="descriptionInfos"></li>
+
+            <li><label for="lieu">Rue de la sortie: </label>
+                <input type="text" name="lieu" id="lieu"></li>
+
+            <li><label for="site">Site de la sortie : </label>
+                <select name="" id="site">
+                    <option selected >Choisir le site</option>
+                    {% for site in sites %}
+                    <option value = " {{ site.id }} "></option>
+
+                </select>
+            </li>
+</ul></div>
+
+    <label for=""></label>
+    <button type="submit">Créer une sortie</button>
+    #}
+
+{% endblock %}
