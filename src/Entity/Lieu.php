@@ -19,30 +19,14 @@ class Lieu
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=30)
-     */
-    private $nom;
+
 
     /**
-     * @ORM\Column(type="string", length=30, nullable=true)
+     * @ORM\Column(type="string", length=180, nullable=false)
      */
     private $rue;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $latitude;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $longitude;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="lieu")
-     */
-    private $sortie;
 
     /**
      * @ORM\ManyToOne(targetEntity=Ville::class, inversedBy="lieu")
@@ -50,48 +34,55 @@ class Lieu
      */
     private $ville;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $longitude;
+
+    /**
+     * @ORM\Column(type="string", length=30, nullable=true)
+     */
+    private $nom;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="lieu")
+     */
+    private $sorties;
+
     public function __construct()
     {
-        $this->sortie = new ArrayCollection();
+        $this->sorties = new ArrayCollection();
     }
+
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
 
-    public function setNom(string $nom): self
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
 
     public function getRue(): ?string
     {
         return $this->rue;
     }
 
-    public function setRue(?string $rue): self
+    public function setRue(string $rue): self
     {
         $this->rue = $rue;
 
         return $this;
     }
 
-    public function getLatitude(): ?float
+    public function getVille(): ?Ville
     {
-        return $this->latitude;
+        return $this->ville;
     }
 
-    public function setLatitude(?float $latitude): self
+    public function setVille(?Ville $ville): self
     {
-        $this->latitude = $latitude;
+        $this->ville = $ville;
 
         return $this;
     }
@@ -108,45 +99,46 @@ class Lieu
         return $this;
     }
 
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(?string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Sortie[]
      */
-    public function getSortie(): Collection
+    public function getSorties(): Collection
     {
-        return $this->sortie;
+        return $this->sorties;
     }
 
-    public function addSortie(Sortie $sortie): self
+    public function addSorty(Sortie $sorty): self
     {
-        if (!$this->sortie->contains($sortie)) {
-            $this->sortie[] = $sortie;
-            $sortie->setLieu($this);
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties[] = $sorty;
+            $sorty->setLieu($this);
         }
 
         return $this;
     }
 
-    public function removeSortie(Sortie $sortie): self
+    public function removeSorty(Sortie $sorty): self
     {
-        if ($this->sortie->removeElement($sortie)) {
+        if ($this->sorties->removeElement($sorty)) {
             // set the owning side to null (unless already changed)
-            if ($sortie->getLieu() === $this) {
-                $sortie->setLieu(null);
+            if ($sorty->getLieu() === $this) {
+                $sorty->setLieu(null);
             }
         }
 
         return $this;
     }
 
-    public function getVille(): ?Ville
-    {
-        return $this->ville;
-    }
-
-    public function setVille(?Ville $ville): self
-    {
-        $this->ville = $ville;
-
-        return $this;
-    }
 }

@@ -1,57 +1,66 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {# Run `composer require symfony/webpack-encore-bundle`
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
-        {% block stylesheets %}
-            {#{{ encore_entry_link_tags('app') }}#}
-        {% endblock %}
-le test comit
-        {% block javascripts %}
-            {#{{ encore_entry_script_tags('app') }}#}
-        {% endblock %}
-    </head>
-    <body>
+    {% block stylesheets %}
+        {#{{ encore_entry_link_tags('app') }}#}
+    {% endblock %}
 
-            <div class="collapse navbar-collapse  justify-content-between" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href=" ">Accueil</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ path('liste_sorties') }}">Liste sorties</a>
-                      </li>
+    {% block javascripts %}
+        {#{{ encore_entry_script_tags('app') }}#}
+    {% endblock %}
+</head>
+{% block body %}
+<body>
+
+<div class="collapse navbar-collapse  justify-content-between" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+            <a class="nav-link" href=" ">Accueil</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ path('listSorties') }}">Liste sorties</a>
+        </li>
 
 
-                </ul>
-                <ul class="navbar-nav mr-auto form-inline">
-                    {% if app.user %}
-                        <span class="navbar-text">Hello </span>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('main') }}">Accueil</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('profil', {'id':1}) }}">Mon profil</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('register') }}">Créer un compte</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('app_login') }} ">Se connecter</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
-        <main>
-            {% block main %}
-            {% endblock %}
-        </main>
-    </body>
+    </ul>
+    <ul class="navbar-nav mr-auto form-inline">
+        {% if app.user %}
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if app.user.urlPhoto is not null %}
+                    <img class="img-profile rounded-circle" src="{{ asset('files/' ~ app.user.photo) }}">
+                {% else %}
+                    <i class="fas fa-user-circle"></i>
+                {% endif %}
+            </a>
+            <span class="navbar-text">HELLO {{ app.user.prenom }}<span></span>{{ app.user.nom }}</span>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('main') }}">Accueil</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('profil', {'id':1}) }}">Mon profil</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+            </li>
+        {% else %}
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('register') }}">Créer un compte</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('app_login') }} ">Se connecter</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock %}
+
+<main>
+    {% block main %}
+    {% endblock %}
+</main>
+</body>
 </html>

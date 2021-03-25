@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+{% block main %}
+    {{ parent() }}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Nom de la sortie</th>
+                        <th scope="col">Date de la sortie</th>
+                        <th scope="col">Date de cloture</th>
+                        <th scope="col">Inscrits/places</th>
+                        <th scope="col">Etat</th>
+                        <th scope="col">Inscrit</th>
+                        <th scope="col">Organisateur</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sortie in sorties %}
+                        {# NOM DE LA SORTIE #}
+                        <tr>
+                        <td>{{ sortie.nom }}</td>
+                        <td>{{ sortie.datedebut | date('d/m/Y H:i') }}</td>
+                        {# DATE LIMITE INSCRIPTION #}
+                        <td>{{ sortie.dateLimiteInscription | date('d/m/Y H:i') }}</td>
+                        {# NOMBRE DE PLACE #}
+                        <td>{# {{ sortie.inscriptions }}  /#} {{ sortie.nbInscriptionsMax }}</td>
+                        {# ETAT #}
+                        <td class="text-primary"><b>{{ sortie.etat.libelle }}</b></td>
+                        {# INSCRIT ? #}
+                        <td>{#  {% if inscrit %}#}
+                            <input type="hidden" class="inscrit"  value="1">
+                            &#128502;
+                            {#  {% endif %}#}
+                            <input type="hidden" class="inscrit"  value="0">
+                        </td>
+                        {# NOM ORGANISATEUR #}
+                        <td><a href="{{ path('profil',{'id':sortie.organisateur.id}) }}">{{ sortie.organisateur.prenom}}<span></span>{{ sortie.organisateur.nom}}</a></td>
+                        {# ACTIONS #}
+
+                        <td>  <a href="{{ path('detailSortie',{'id':5}) }}">Afficher</a>
+                        <input type="hidden" name="inscrit" value="{#{ inscrit }#}">
+                        {#{% if inscrit %}#}
+                        <a href="{#{{ path('',{'id':sortie.id}) }#}"> - Se désister</a>
+                        {#  % else %#}
+                        <a href=" "> S'inscrire</a>
+                        {#{% endif %}#}
+                        {% if sortie.organisateur == app.user or is_granted('ROLE_ADMIN')%}
+                            <a href="{#{ path(' ',{'id':sortie.id}) }}#}"> - Annuler</a>
+                            </td> </tr>
+                        {% endif %}
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    {# BOUTON POUR CREER UNE SORTIE #}
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <a href="">
+            <button class="btn btn-success" type="button">Creer une sortie</button>
+        </a>
+        <span></span>
+        <a href="">
+            <button class="btn btn-primary" type="button">Creer une sortie</button>
+        </a>
+    </div>
+
+
+{% endblock %}

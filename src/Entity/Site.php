@@ -22,22 +22,23 @@ class Site
     /**
      * @ORM\Column(type="string", length=30)
      */
-    private $libelle;
+    private $nom;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Participant::class, mappedBy="site")
-     */
-    private $participant;
 
     /**
      * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="site")
      */
-    private $sortie;
+    private $listSorties;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Participant::class, mappedBy="site")
+     */
+    private $participants;
 
     public function __construct()
     {
-        $this->participant = new ArrayCollection();
-        $this->sortie = new ArrayCollection();
+        $this->listSorties = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -45,14 +46,45 @@ class Site
         return $this->id;
     }
 
-    public function getLibelle(): ?string
+    public function getNom(): ?string
     {
-        return $this->libelle;
+        return $this->nom;
     }
 
-    public function setLibelle(string $libelle): self
+    public function setNom(string $nom): self
     {
-        $this->libelle = $libelle;
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Collection|Sortie[]
+     */
+    public function getListSorties(): Collection
+    {
+        return $this->listSorties;
+    }
+
+    public function addListSorty(Sortie $listSorty): self
+    {
+        if (!$this->listSorties->contains($listSorty)) {
+            $this->listSorties[] = $listSorty;
+            $listSorty->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListSorty(Sortie $listSorty): self
+    {
+        if ($this->listSorties->removeElement($listSorty)) {
+            // set the owning side to null (unless already changed)
+            if ($listSorty->getSite() === $this) {
+                $listSorty->setSite(null);
+            }
+        }
 
         return $this;
     }
@@ -60,15 +92,15 @@ class Site
     /**
      * @return Collection|Participant[]
      */
-    public function getParticipant(): Collection
+    public function getParticipants(): Collection
     {
-        return $this->participant;
+        return $this->participants;
     }
 
     public function addParticipant(Participant $participant): self
     {
-        if (!$this->participant->contains($participant)) {
-            $this->participant[] = $participant;
+        if (!$this->participants->contains($participant)) {
+            $this->participants[] = $participant;
             $participant->setSite($this);
         }
 
@@ -77,40 +109,10 @@ class Site
 
     public function removeParticipant(Participant $participant): self
     {
-        if ($this->participant->removeElement($participant)) {
+        if ($this->participants->removeElement($participant)) {
             // set the owning side to null (unless already changed)
             if ($participant->getSite() === $this) {
                 $participant->setSite(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Sortie[]
-     */
-    public function getSortie(): Collection
-    {
-        return $this->sortie;
-    }
-
-    public function addSortie(Sortie $sortie): self
-    {
-        if (!$this->sortie->contains($sortie)) {
-            $this->sortie[] = $sortie;
-            $sortie->setSite($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSortie(Sortie $sortie): self
-    {
-        if ($this->sortie->removeElement($sortie)) {
-            // set the owning side to null (unless already changed)
-            if ($sortie->getSite() === $this) {
-                $sortie->setSite(null);
             }
         }
 
