@@ -1,0 +1,159 @@
+
+{% extends 'base.html.twig' %}
+
+{% block main %}
+
+    {{ parent() }}
+
+    <div class="container">
+{#<form action="{{ path('listSorties') }}" method="get">#}
+{# AFFICHAGE DE LA DATE DU JOUR ET DE LA PERSONNE CONNECTEE #}
+        <div class="container">
+{#              <p><strong>Nous sommes le : </strong><span class="date" id="date">{{ date('d/m/Y') }}</span></p>#}
+            {% if app.user %}
+              <p><strong>Bienvenue </strong> <span>{{ app.user.prenom }} {{ app.user.nom }}</span></p>
+            {% endif %}
+
+        </div>
+{# -----------FILTRAGE DES SORTIES------------- #}
+        <div class="container">
+                <h1>Filter les sorties</h1>
+        </div>
+{# ON FILTRE PAR SITE #}
+    <div class="container">
+    <label for="pet-select">Site :</label>
+
+    <select name="site">
+        <option selected>Tous les sites</option>
+        {% for site in sites %}
+           <option attr-id={{site.id}} value="{{site.id}}" >{{site.nom}}</option>
+        {% endfor %}
+
+    </select>
+    </div>
+
+{# RECHERCHE PAR MOT#}
+    <div id="searchbar">
+        <form action="" class="formulaire">
+            <label for="searchbar"><strong>Le nom de la sortie contient :</strong></label>
+            <input class="champ" type="text" name="mot" value="" placeholder="Search..."/>
+{#        </form>#}
+    </div>
+
+
+    {# ON FILTRE PAR DATE #}
+    <div class="mb-3">
+        <label for="debut">Date de début</label>
+        <input class="rounded form-control" type="date" id="debut" name="date_debut" value="{{ app.request.get('date_debut') }}">
+        <label for="fin">Date de fin</label>
+        <input class="rounded form-control" type="date" id="fin" name="date_fin" value="{{ app.request.get('date_fin') }}">
+    </div>
+
+
+    <div class="container-sm">
+{# SORTIE DONT JE SUIS L'ORGANISATEUR #}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" name="checkbox_organisateur">
+                    <label class="form-check-label" for="checkbox_organisateur">
+                        Afficher les sorties que j'ai organisées
+                    </label>
+                </div>
+{# SORTIE DONT OU JE SUIS INSCRIT #}
+                <div class="form-check">
+                    <input class="form-check" type="checkbox" value="1" name="checkbox_inscrit">
+                    <label class="form-check-label" for="checkbox_inscrit">
+                        Afficher les sorties où je suis inscrit(e)
+                    </label>
+                </div>
+{# SORTIE DONT OU JE SUIS PAS INSCRIT #}
+                <div class="form-check">
+                    <input class="form-check" type="checkbox" value="0" name="checkbox_noInscrit">
+                    <label class="form-check-label" for="checkbox_noInscrit">
+                        Sorties auxquelles je ne suis pas inscrit(e)
+                    </label>
+                </div>
+{# SORTIES PASSEES #}
+                <div class="form-check">
+                    <input class="form-check" type="checkbox" value="PASSEE" name="checkbox_passee">
+                    <label class="form-check-label" for="checkbox_passee">
+                        Sorties passées
+                    </label>
+                </div>
+            </div>
+
+{# BOUTON RECHERCHER #}
+    <button type="button" class="btn btn-info btn-lg">Rechercher</button>
+</form>
+{# LISTE DES FILTRES #}
+        <div class="container">
+        <div class="row">
+        <div class="col">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Nom de la sortie</th>
+                <th scope="col">Date de la sortie</th>
+                <th scope="col">Date de cloture</th>
+                <th scope="col">Inscrits/places</th>
+                <th scope="col">Etat</th>
+                <th scope="col">Inscrit</th>
+                <th scope="col">Organisateur</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+                    {% for sortie in sorties %}
+                        {# NOM DE LA SORTIE #}
+                        <tr>
+                        <td>{{ sortie.nom }}</td>
+                        <td>{{ sortie.datedebut | date('d/m/Y H:i') }}</td>
+                        {# DATE LIMITE INSCRIPTION #}
+                        <td>{{ sortie.dateLimiteInscription | date('d/m/Y H:i') }}</td>
+                        {# NOMBRE DE PLACE #}
+                        <td>{# {{ sortie.inscriptions }}  /#} {{ sortie.nbInscriptionsMax }}</td>
+                        {# ETAT #}
+                        <td class="text-primary"><b>{{ sortie.etat.libelle }}</b></td>
+                        {# INSCRIT ? #}
+                        <td>{#  {% if inscrit %}#}
+                            <input type="hidden" class="inscrit"  value="1">
+                            &#128502;
+                            {#  {% endif %}#}
+                            <input type="hidden" class="inscrit"  value="0">
+                        </td>
+                        {# NOM ORGANISATEUR #}
+                        <td><a href="{{ path('profil',{'id':sortie.organisateur.id}) }}">{{ sortie.organisateur.prenom}}<span></span>{{ sortie.organisateur.nom}}</a></td>
+                        {# ACTIONS #}
+
+                        <td>  <a href="{{ path('detailSortie',{'id':5}) }}">Afficher</a>
+                        <input type="hidden" name="inscrit" value="{#{ inscrit }#}">
+                        {#{% if inscrit %}#}
+                        <a href="{#{{ path('',{'id':sortie.id}) }#}"> - Se désister</a>
+                        {#  % else %#}
+                        <a href=" "> S'inscrire</a>
+                        {#{% endif %}#}
+                        {% if sortie.organisateur == app.user or is_granted('ROLE_ADMIN')%}
+                            <a href="{#{ path(' ',{'id':sortie.id}) }}#}"> - Annuler</a>
+                            </td> </tr>
+                        {% endif %}
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    {# BOUTON POUR CREER UNE SORTIE #}
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <a href="">
+            <button class="btn btn-success" type="button">Retour accueil</button>
+        </a>
+        <span></span>
+        <a href="">
+            <button class="btn btn-primary" type="button">Creer une sortie</button>
+        </a>
+    </div>
+
+
+{% endblock %}
