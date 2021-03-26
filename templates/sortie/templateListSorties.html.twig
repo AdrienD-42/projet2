@@ -154,7 +154,7 @@
                 <td>{{ sortie.organisateur.nom }}</td>
                 <td colspan="2">Larry the Bird</td>
             </tr>
-            {% endfor %}
+
 {# ACTIONS #}
 <tr class="table-success">
     <th scope="row">8</th>
@@ -169,10 +169,11 @@
     {# LIEN POUR MODIFIER #}
     <a href="">Modifier</a>
     {# LIEN POUR ANNULER #}
-    <a href="">Annuler</a>
+    <a href="?sortieId={{ sortie.id }}">Annuler</a>
     <td colspan="2">Larry the Bird</td>
 </tr>
             </tbody>
+            {% endfor %}
         </table>
         </div>
         </div>
@@ -184,4 +185,5 @@
                 <button class="btn btn-primary" type="button">Creer une sortie</button>
                 </a>
             </div>
+
 {% endblock %}
