@@ -1,15 +1,14 @@
 <?php
 
 namespace App\Entity;
-use Symfony\Component\Validator\Constraints as Assert;
+
+
 use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-
-
 /**
  * @ORM\Entity(repositoryClass=ParticipantRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
@@ -23,12 +22,6 @@ class Participant implements UserInterface
      */
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank(message="Veuillez indiquer un email.")
-     * @Assert\Length(max="180")
-     */
-    private $email;
 
     /**
      * @ORM\Column(type="json")
@@ -41,29 +34,26 @@ class Participant implements UserInterface
      */
     private $password;
 
+
     /**
-     * @ORM\Column(type="string", length=100)
-     *@Assert\NotBlank(message="Veuillez indiquer votre nom.")
-     * @Assert\Length(min="2", max="100",
-     *                minMessage= "Votre nom doit avoir au moins {{ limit }} caractères.",
-     *                maxMessage= "Votre nom doit avoir au maximum {{ limit }} caractères.")
+     * @ORM\Column(type="string", length=30)
      */
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=100)
-     * @Assert\NotBlank(message="Veuillez indiquer votre prénom.")
-     * @Assert\Length(min="2", max="100",
-     *                minMessage= "Votre prénom doit avoir au moins {{ limit }} caractères.",
-     *                maxMessage= "Votre prénom doit avoir au maximum {{ limit }} caractères.")
+     * @ORM\Column(type="string", length=30)
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
-     * @Assert\Length(max="10", maxMessage= "Votre numéro de téléphone doit avoir au maximum {{ limit }} caractères")
      */
     private $telephone;
+
+    /**
+     * @ORM\Column(type="string", length=180)
+     */
+    private $email;
 
     /**
      * @ORM\Column(type="boolean")
@@ -76,24 +66,29 @@ class Participant implements UserInterface
     private $actif;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="participant")
+     * @ORM\OneToMany(targetEntity=Inscription::class, mappedBy="participant")
+     */
+    private $inscriptions;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="organisateur", orphanRemoval=true)
+     */
+    private $listSorties;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="participants")
      */
     private $site;
 
     /**
-     * @ORM\OneToMany(targetEntity=Sortie::class, mappedBy="organisateur")
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $sorties;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Sortie::class, inversedBy="participants")
-     */
-    private $inscrit;
+    private $urlPhoto;
 
     public function __construct()
     {
-        $this->sorties = new ArrayCollection();
-        $this->inscrit = new ArrayCollection();
+        $this->inscriptions = new ArrayCollection();
+        $this->listSorties = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -113,6 +108,12 @@ class Participant implements UserInterface
         return $this;
     }
 
+
+
+
+
+
+
     /**
      * A visual identifier that represents this user.
      *
@@ -128,8 +129,11 @@ class Participant implements UserInterface
      */
     public function getRoles(): array
     {
-        return $this->roles;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
 
+        return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
@@ -152,6 +156,8 @@ class Participant implements UserInterface
         $this->password = $password;
 
         return $this;
+
+
     }
 
     /**
@@ -210,6 +216,8 @@ class Participant implements UserInterface
         return $this;
     }
 
+
+
     public function getAdministrateur(): ?bool
     {
         return $this->administrateur;
@@ -234,6 +242,66 @@ class Participant implements UserInterface
         return $this;
     }
 
+    /**
+     * @return Collection|Inscription[]
+     */
+    public function getInscriptions(): Collection
+    {
+        return $this->inscriptions;
+    }
+
+    public function addInscription(Inscription $inscription): self
+    {
+        if (!$this->inscriptions->contains($inscription)) {
+            $this->inscriptions[] = $inscription;
+            $inscription->setParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInscription(Inscription $inscription): self
+    {
+        if ($this->inscriptions->removeElement($inscription)) {
+            // set the owning side to null (unless already changed)
+            if ($inscription->getParticipant() === $this) {
+                $inscription->setParticipant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Sortie[]
+     */
+    public function getListSorties(): Collection
+    {
+        return $this->listSorties;
+    }
+
+    public function addListSorty(Sortie $listSorty): self
+    {
+        if (!$this->listSorties->contains($listSorty)) {
+            $this->listSorties[] = $listSorty;
+            $listSorty->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeListSorty(Sortie $listSorty): self
+    {
+        if ($this->listSorties->removeElement($listSorty)) {
+            // set the owning side to null (unless already changed)
+            if ($listSorty->getOrganisateur() === $this) {
+                $listSorty->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function getSite(): ?Site
     {
         return $this->site;
@@ -246,56 +314,14 @@ class Participant implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Sortie[]
-     */
-    public function getSorties(): Collection
+    public function getUrlPhoto(): ?string
     {
-        return $this->sorties;
+        return $this->urlPhoto;
     }
 
-    public function addSorty(Sortie $sorty): self
+    public function setUrlPhoto(?string $urlPhoto): self
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties[] = $sorty;
-            $sorty->setOrganisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSorty(Sortie $sorty): self
-    {
-        if ($this->sorties->removeElement($sorty)) {
-            // set the owning side to null (unless already changed)
-            if ($sorty->getOrganisateur() === $this) {
-                $sorty->setOrganisateur(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Sortie[]
-     */
-    public function getInscrit(): Collection
-    {
-        return $this->inscrit;
-    }
-
-    public function addInscrit(Sortie $inscrit): self
-    {
-        if (!$this->inscrit->contains($inscrit)) {
-            $this->inscrit[] = $inscrit;
-        }
-
-        return $this;
-    }
-
-    public function removeInscrit(Sortie $inscrit): self
-    {
-        $this->inscrit->removeElement($inscrit);
+        $this->urlPhoto = $urlPhoto;
 
         return $this;
     }

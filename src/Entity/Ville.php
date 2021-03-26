@@ -20,19 +20,19 @@ class Ville
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=30, nullable=false)
      */
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=30)
-     */
-    private $codePostal;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Lieu::class, mappedBy="ville")
+     * @ORM\OneToMany(targetEntity=Lieu::class, mappedBy="ville", orphanRemoval=true)
      */
     private $lieu;
+
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $codePostal;
 
     public function __construct()
     {
@@ -52,18 +52,6 @@ class Ville
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getCodePostal(): ?string
-    {
-        return $this->codePostal;
-    }
-
-    public function setCodePostal(string $codePostal): self
-    {
-        $this->codePostal = $codePostal;
 
         return $this;
     }
@@ -94,6 +82,18 @@ class Ville
                 $lieu->setVille(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCodePostal(): ?string
+    {
+        return $this->codePostal;
+    }
+
+    public function setCodePostal(string $codePostal): self
+    {
+        $this->codePostal = $codePostal;
 
         return $this;
     }

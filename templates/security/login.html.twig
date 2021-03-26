@@ -1,8 +1,8 @@
-{% extends 'index_base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Se connecter{% endblock %}
 
-{% block body %}
+{% block main %}
     {{ parent() }}
 <form method="post">
     {% if error %}

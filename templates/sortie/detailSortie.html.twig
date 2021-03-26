@@ -1,4 +1,4 @@
-{% extends 'index_base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 
 
@@ -7,7 +7,7 @@
 {% block main %}
     {{ parent() }}
     <section class="">
-        <h1 class="text-center  my-3">Sortie | {{ sortie.nom }}</h1>
+        <h1 class="text-center  my-3">{{ page_name }} | {{ sortie.nom }}</h1>
 
         {# Affichage de la sortie #}
         <div class="jumbotron">
@@ -37,7 +37,7 @@
             </div>
             <div class="row justify-content-around">
                 <div class="col-4">
-                    <p><span class="font-weight-bold">Nb de participants maximum :</span> {{ sortie.nbInscriptionsMax }}</p>
+                    <p><span class="font-weight-bold">Nb de places :</span> {{ sortie.nbInscriptionsMax }}</p>
                 </div>
                 <div class="col-4">
                     <p><span class="font-weight-bold">Ville :</span> {{ sortie.lieu.rue }}</p>
@@ -75,7 +75,7 @@
                 <tr>
                     <td>
                         <a href="{{ path('profil', {'id': participant.id }) }}">
-                           {{ participant.nom }}
+                            {{ participant.nom }}
                         </a>
                     </td>
                     <td>

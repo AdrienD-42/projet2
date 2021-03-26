@@ -20,14 +20,53 @@ class Sortie
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=30, nullable=false)
      */
     private $nom;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=false)
      */
-    private $dateDebut;
+    private $datedebut;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=false)
+     */
+    private $dateLimiteInscription;
+
+    /**
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private $nbInscriptionsMax;
+
+    /**
+     * @ORM\Column(type="string", length=500, nullable=true)
+     */
+    private $infosSortie;
+
+
+
+    /**
+     * @ORM\OneToMany(targetEntity=Inscription::class, mappedBy="sortie", orphanRemoval=true)
+     */
+    private $inscriptions;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="listSorties")
+     */
+    private $site;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Participant::class, inversedBy="listSorties")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $organisateur;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sortiesEtat")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $etat;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -35,57 +74,18 @@ class Sortie
     private $duree;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $dateCloture;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $nbInscriptionsMax;
-
-    /**
-     * @ORM\Column(type="string", length=500, nullable=true)
-     */
-    private $descriptionInfos;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
-     */
-    private $etatSortie;
-
-    /**
-     * @ORM\Column(type="string", length=250, nullable=true)
-     */
-    private $urlPhoto;
-
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="sortie")
-     */
-    private $site;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Participant::class, inversedBy="sorties")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $organisateur;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Lieu::class, inversedBy="sortie")
+     * @ORM\ManyToOne(targetEntity=Lieu::class, inversedBy="sorties")
      * @ORM\JoinColumn(nullable=false)
      */
     private $lieu;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Participant::class, mappedBy="inscrit")
-     */
-    private $participants;
+
+
+
 
     public function __construct()
     {
-        $this->participants = new ArrayCollection();
+        $this->inscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -105,38 +105,26 @@ class Sortie
         return $this;
     }
 
-    public function getDateDebut(): ?\DateTimeInterface
+    public function getDatedebut(): ?\DateTimeInterface
     {
-        return $this->dateDebut;
+        return $this->datedebut;
     }
 
-    public function setDateDebut(\DateTimeInterface $dateDebut): self
+    public function setDatedebut(\DateTimeInterface $datedebut): self
     {
-        $this->dateDebut = $dateDebut;
+        $this->datedebut = $datedebut;
 
         return $this;
     }
 
-    public function getDuree(): ?int
+    public function getDateLimiteInscription(): ?\DateTimeInterface
     {
-        return $this->duree;
+        return $this->dateLimiteInscription;
     }
 
-    public function setDuree(?int $duree): self
+    public function setDateLimiteInscription(\DateTimeInterface $dateLimiteInscription): self
     {
-        $this->duree = $duree;
-
-        return $this;
-    }
-
-    public function getDateCloture(): ?\DateTimeInterface
-    {
-        return $this->dateCloture;
-    }
-
-    public function setDateCloture(\DateTimeInterface $dateCloture): self
-    {
-        $this->dateCloture = $dateCloture;
+        $this->dateLimiteInscription = $dateLimiteInscription;
 
         return $this;
     }
@@ -153,38 +141,45 @@ class Sortie
         return $this;
     }
 
-    public function getDescriptionInfos(): ?string
+    public function getInfosSortie(): ?string
     {
-        return $this->descriptionInfos;
+        return $this->infosSortie;
     }
 
-    public function setDescriptionInfos(?string $descriptionInfos): self
+    public function setInfosSortie(?string $infosSortie): self
     {
-        $this->descriptionInfos = $descriptionInfos;
+        $this->infosSortie = $infosSortie;
 
         return $this;
     }
 
-    public function getEtatSortie(): ?int
+
+    /**
+     * @return Collection|Inscription[]
+     */
+    public function getInscriptions(): Collection
     {
-        return $this->etatSortie;
+        return $this->inscriptions;
     }
 
-    public function setEtatSortie(?int $etatSortie): self
+    public function addInscription(Inscription $inscription): self
     {
-        $this->etatSortie = $etatSortie;
+        if (!$this->inscriptions->contains($inscription)) {
+            $this->inscriptions[] = $inscription;
+            $inscription->setSortie($this);
+        }
 
         return $this;
     }
 
-    public function getUrlPhoto(): ?string
+    public function removeInscription(Inscription $inscription): self
     {
-        return $this->urlPhoto;
-    }
-
-    public function setUrlPhoto(?string $urlPhoto): self
-    {
-        $this->urlPhoto = $urlPhoto;
+        if ($this->inscriptions->removeElement($inscription)) {
+            // set the owning side to null (unless already changed)
+            if ($inscription->getSortie() === $this) {
+                $inscription->setSortie(null);
+            }
+        }
 
         return $this;
     }
@@ -213,26 +208,26 @@ class Sortie
         return $this;
     }
 
-    /**
-     * @return Collection|Participant[]
-     */
-    public function getInscrit(): Collection
+    public function getEtat(): ?Etat
     {
-        return $this->inscrit;
+        return $this->etat;
     }
 
-    public function addInscrit(Participant $inscrit): self
+    public function setEtat(?Etat $etat): self
     {
-        if (!$this->inscrit->contains($inscrit)) {
-            $this->inscrit[] = $inscrit;
-        }
+        $this->etat = $etat;
 
         return $this;
     }
 
-    public function removeInscrit(Participant $inscrit): self
+    public function getDuree(): ?int
     {
-        $this->inscrit->removeElement($inscrit);
+        return $this->duree;
+    }
+
+    public function setDuree(?int $duree): self
+    {
+        $this->duree = $duree;
 
         return $this;
     }
@@ -249,30 +244,6 @@ class Sortie
         return $this;
     }
 
-    /**
-     * @return Collection|Participant[]
-     */
-    public function getParticipants(): Collection
-    {
-        return $this->participants;
-    }
 
-    public function addParticipant(Participant $participant): self
-    {
-        if (!$this->participants->contains($participant)) {
-            $this->participants[] = $participant;
-            $participant->addInscrit($this);
-        }
 
-        return $this;
-    }
-
-    public function removeParticipant(Participant $participant): self
-    {
-        if ($this->participants->removeElement($participant)) {
-            $participant->removeInscrit($this);
-        }
-
-        return $this;
-    }
 }
